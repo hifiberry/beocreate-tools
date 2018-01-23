@@ -1,0 +1,35 @@
+#!/bin/sh
+sudo apt-get -y install build-essential portaudio19-dev
+
+cd /tmp
+wget https://github.com/herrernst/librespot/releases/download/v20170717-910974e/librespot-linux-armhf-raspberry_pi.zip
+unzip librespot-linux-armhf-raspberry_pi.zip
+rm librespot-linux-armhf-raspberry_pi.zip
+sudo sudo mkdir -p /opt/hifiberry/bin
+sudo mv librespot /opt/hifiberry/bin
+
+cat <<EOT >spotify.service
+[Unit]
+Description=Spotify Connect
+After=network-online.target
+After=sound.target
+
+[Service]
+Type=idle
+User=pi
+ExecStart=/opt/hifiberry/bin/librespot --name Beocreate --cache /tmp --bitrate 320 --backend alsa > /dev/null 2>&1 &
+Restart=always
+RestartSec=10
+StartLimitInterval=30
+StartLimitBurst=20
+
+[Install]
+WantedBy=multi-user.target
+
+EOT
+sudo cp spotify.service /lib/systemd/system/spotify.service
+sudo systemctl daemon-reload
+sudo systemctl enable spotify.service
+sudo systemctl restart spotify.service
+
+
