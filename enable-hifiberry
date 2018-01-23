@@ -1,0 +1,19 @@
+#!/bin/sh
+cat <<EOT >/tmp/asound.conf
+pcm.hifiberry {
+    type softvol
+    slave.pcm "plughw:0"
+    control.name "Master"
+    control.card 0
+}
+
+pcm.!default {
+    type             plug
+    slave.pcm       "hifiberry"
+}
+EOT
+sudo mv /tmp/asound.conf /etc/asound.conf
+
+cat /boot/config.txt | grep -vi "dtparam=audio" | grep -vi hifiberry >/tmp/config.txt
+echo dtoverlay=hifiberry-dac >>/tmp/config.txt
+sudo mv /tmp/config.txt /boot/config.txt

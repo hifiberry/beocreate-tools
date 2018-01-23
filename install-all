@@ -1,0 +1,8 @@
+#!/bin/sh
+cd `dirname $0`
+./update-system
+./enable-hifiberry
+./enable-spi
+./install-tcpserver
+./install-tools
+sudo reboot

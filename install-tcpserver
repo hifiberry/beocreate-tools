@@ -1,0 +1,40 @@
+#Ã!/bin/sh
+# Install the BeoCreate TCP server
+sudo apt-get install -y git cmake
+git clone https://github.com/bang-olufsen/create
+cd create/SigmaTcpDaemon
+cmake .
+make
+
+sudo systemctl start beocreate-tcp
+sudo cp sigmaTcpDaemon /usr/local/bin/beocreate-tcp
+sudo chown root /usr/local/bin/beocreate-tcp
+sudo chmod u+s /usr/local/bin/beocreate-tcp
+sudo chmod go+rx /usr/local/bin/beocreate-tcp
+cd ../SigmaClientTool
+cmake .
+make
+sudo cp SigmaClientTool /usr/local/bin/beocreate-client
+sudo chown root /usr/local/bin/beocreate-tcp
+sudo chmod go+rx /usr/local/bin/beocreate-tcp
+
+cat <<EOF >beocreate-tcp.service
+[Unit]
+Description=Beocreate DSP TCP deamon
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/beocreate-tcp
+StandardOutput=null
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+Alias=beocreate-tcp.service
+EOF
+
+sudo mv beocreate-tcp.service /etc/systemd/system
+sudo systemctl daemon-reload
+sudo systemctl start beocreate-tcp
+sudo systemctl enable beocreate-tcp

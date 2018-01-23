@@ -1,0 +1,5 @@
+#!/bin/sh
+cd /tmp
+cat /boot/config.txt  | grep -v "dtparam=spi" >config.txt
+echo "dtparam=spi=on" >>  /tmp/config.txt
+sudo mv /tmp/config.txt /boot/config.txt
