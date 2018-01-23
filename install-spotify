@@ -2,11 +2,11 @@
 sudo apt-get -y install build-essential portaudio19-dev
 
 cd /tmp
-wget https://github.com/herrernst/librespot/releases/download/v20170717-910974e/librespot-linux-armhf-raspberry_pi.zip
-unzip librespot-linux-armhf-raspberry_pi.zip
-rm librespot-linux-armhf-raspberry_pi.zip
+wget https://github.com/Spotifyd/spotifyd/releases/download/untagged-2cb556328b5f57a0fe2b/spotifyd-2018-01-14-armv7.zip
+unzip spotifyd-2018-01-14-armv7.zip
+rm spotifyd-2018-01-14-armv7.zip
 sudo sudo mkdir -p /opt/hifiberry/bin
-sudo mv librespot /opt/hifiberry/bin
+sudo mv spotifyd /opt/hifiberry/bin
 
 cat <<EOT >spotify.service
 [Unit]
@@ -17,7 +17,7 @@ After=sound.target
 [Service]
 Type=idle
 User=pi
-ExecStart=/opt/hifiberry/bin/librespot --name Beocreate --cache /tmp --bitrate 320 --backend alsa > /dev/null 2>&1 &
+ExecStart=/opt/hifiberry/bin/spotifyd -c /etc/spotifyd.conf --no-daemon
 Restart=always
 RestartSec=10
 StartLimitInterval=30
@@ -27,6 +27,19 @@ StartLimitBurst=20
 WantedBy=multi-user.target
 
 EOT
+
+cat <<EOT >spotifyd.conf
+[global]
+#username = USER
+#password = PASS
+backend = alsa
+mixer = Master
+volume-control = alsa # or softvol
+device_name = Beocreate
+bitrate = 320
+EOT
+
+sudo cp spotifyd.conf /etc/spotifyd.conf
 sudo cp spotify.service /lib/systemd/system/spotify.service
 sudo systemctl daemon-reload
 sudo systemctl enable spotify.service
