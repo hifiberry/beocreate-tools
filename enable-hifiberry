@@ -36,7 +36,7 @@ pcm.softvol {
     card 0
   }
   min_dB -90.2
-  max_db -6.2
+  max_dB -6.2
 }
 
 pcm.!default {
