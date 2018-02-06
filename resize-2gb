@@ -1,6 +1,6 @@
 #!/bin/bash
 # extend size of the root filesystem to 2GB
-first_sector=`echo p | fdisk /dev/mmcblk0 | grep Linux| awk '{print $2}'`
+first_sector=`echo p | sudo fdisk /dev/mmcblk0 | grep Linux| awk '{print $2}'`
 cat <<EOF | sudo fdisk /dev/mmcblk0
 d
 2
