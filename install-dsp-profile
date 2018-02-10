@@ -1,12 +1,18 @@
 #!/bin/bash
 if [ "$1" == "" ]; then
  echo "DSP profile file or URL needed"
+ exit 1
 fi
 if [ -f $1 ]; then
  echo "Using DSP file $1"
 else
  echo "Trying to download DSP file $1 from downloads.hifiberry.com"
- curl http://downloads.hifiberry.com/beocreate/profiles/$1 > $1
+ wget http://downloads.hifiberry.com/beocreate/profiles/$1 
+ if [ "$?" != "0" ]; then
+  echo "Could not download http://downloads.hifiberry.com/beocreate/profiles/$1"
+  echo "Check http://downloads.hifiberry.com/beocreate/profiles for available profiles"
+  exit 1
+ fi
 fi
 
 if [ ! -f $1 ]; then 
@@ -14,11 +20,12 @@ if [ ! -f $1 ]; then
  exit 1
 fi 
 
+
 echo "Writing configuration to the DSP"
 # Mute
 gpio mode 2 out
 gpio write 2 1
-/usr/local/bin/beocreate-client 127.0.0.1 write_eeprom $1
+/usr/local/bin/beocreate-client 127.0.0.1 write_eeprom `readlink -f ./basic-fullrange.xml`
 # Unmute
 gpio write 2 0
 gpio mode 2 in
