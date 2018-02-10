@@ -1,0 +1,5 @@
+#!/bin/sh
+sudo systemctl disable spotify
+sudo systemctl disable shairport-sync
+sudo systemctl disable snapserver
+sudo systemctl enable snapclient
