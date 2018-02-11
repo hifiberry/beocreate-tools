@@ -25,7 +25,7 @@ echo "Writing configuration to the DSP"
 # Mute
 gpio mode 2 out
 gpio write 2 1
-/usr/local/bin/beocreate-client 127.0.0.1 write_eeprom `readlink -f ./basic-fullrange.xml`
+/usr/local/bin/beocreate-client 127.0.0.1 write_eeprom `readlink -f $1`
 # Unmute
 gpio write 2 0
 gpio mode 2 in
