@@ -1,0 +1,4 @@
+#!/bin/bash
+/bin/echo $*  > /tmp/audiostatus &
+sleep 2
+kill $!
