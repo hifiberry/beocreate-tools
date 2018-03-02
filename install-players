@@ -1,0 +1,9 @@
+#!/bin/sh
+cd `dirname $0`
+./update-system
+./install-shairport
+./install-spotify
+mkdir -p /opt/hifiberry/bin
+cp write-status /opt/hifiberry/bin
+chmod ugo+rx  /opt/hifiberry/bin/write-status
+
