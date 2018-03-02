@@ -1,11 +1,23 @@
 #!/bin/sh
 sudo apt-get -y install autoconf automake avahi-daemon build-essential git libasound2-dev libavahi-client-dev libconfig-dev libdaemon-dev libpopt-dev libssl-dev libtool xmltoman pkg-config
+
 git clone https://github.com/mikebrady/shairport-sync.git
 cd shairport-sync
 autoreconf -i -f
 ./configure --sysconfdir=/etc --with-alsa --with-avahi --with-ssl=openssl --with-systemd --with-metadata
 make
 sudo make install
+cd ..
+rm -rf shairport-sync
+
+git clone https://github.com/mikebrady/shairport-sync-metadata-reader
+cd shairport-sync-metadata-reader
+autoreconf -i -f
+./configure
+make
+sudo make install
+cd ..
+rm -rf shairport-sync-metadata-reader
 
 # Create shairport configuration
 cat <<EOT >/tmp/shairport-sync.conf
@@ -16,6 +28,23 @@ general =
 
 alsa = {
   mixer_control_name = "Master";
+};
+
+metadata =
+{
+  enabled = "yes";
+  include_cover_art = "yes";
+  pipe_name = "/tmp/shairport-sync-metadata";
+  pipe_timeout = 5000;
+};
+
+sessioncontrol =
+{
+  run_this_before_play_begins = "/opt/hifiberry/bin/write-status START AIRPLAY";
+  run_this_after_play_ends = "/opt/hifiberry/bin/write-status STOP AIRLAY"; 
+  wait_for_completion = "no";
+  allow_session_interruption = "yes";
+  session_timeout = 20;
 };
 EOT
 sudo mv /tmp/shairport-sync.conf /etc
@@ -34,6 +63,8 @@ After=network.target network-online.target
 ExecStart=/usr/local/bin/shairport-sync -c /etc/shairport-sync.conf
 User=shairport-sync
 Group=shairport-sync
+Restart=always
+RestartSec=3
 
 [Install]
 WantedBy=multi-user.target
