@@ -1,2 +1,8 @@
 #!/bin/sh
 sudo apt-get install -y sox wiringpi
+if [ ! -d "/opt/hifiberry/bin" ]; then
+ mkdir -p /opt/hifiberry/bin
+fi
+for i in write-status create-audio-fifos; do
+ cp $i /opt/hifiberry/bin
+done
