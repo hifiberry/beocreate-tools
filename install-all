@@ -6,4 +6,5 @@ sudo ./resize-2gb
 ./enable-spi
 ./install-tcpserver
 ./install-tools
+./install-daemons
 sudo reboot
