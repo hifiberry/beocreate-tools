@@ -2,9 +2,9 @@
 sudo apt-get -y install build-essential portaudio19-dev
 
 cd /tmp
-wget https://github.com/Spotifyd/spotifyd/releases/download/untagged-2cb556328b5f57a0fe2b/spotifyd-2018-01-14-armv7.zip
-unzip spotifyd-2018-01-14-armv7.zip
-rm spotifyd-2018-01-14-armv7.zip
+wget https://github.com/Spotifyd/spotifyd/releases/download/untagged-49c187b9535b150bb4c7/spotifyd-2018-03-01-armv6.zip
+unzip spotifyd-2018-03-01-armv6.zip
+rm spotifyd-2018-03-01-armv6.zip
 sudo sudo mkdir -p /opt/hifiberry/bin
 sudo mv spotifyd /opt/hifiberry/bin
 
