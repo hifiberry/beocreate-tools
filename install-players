@@ -1,8 +1,10 @@
 #!/bin/sh
 cd `dirname $0`
 ./update-system
+sudo apt-get install -y python3-pip python3-setuptools
 ./install-shairport
 ./install-spotify
+./install-btspeaker
 mkdir -p /opt/hifiberry/bin
 sudo cp write-status /opt/hifiberry/bin
 sudo chmod ugo+rx  /opt/hifiberry/bin/write-status
