@@ -37,6 +37,7 @@ mixer = Master
 volume-control = alsa # or softvol
 device_name = Beocreate
 bitrate = 320
+onevent = /opt/hifiberry/bin/spotifyd-notification
 EOT
 
 sudo cp spotifyd.conf /etc/spotifyd.conf
