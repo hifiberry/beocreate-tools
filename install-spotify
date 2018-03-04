@@ -46,7 +46,7 @@ cat <<EOT >spotifyd.conf
 #password = PASS
 backend = alsa
 mixer = Master
-volume-control = alsa_linear
+volume-control = alsa
 device_name = Beocreate
 bitrate = 320
 onevent = /opt/hifiberry/bin/spotifyd-notification
