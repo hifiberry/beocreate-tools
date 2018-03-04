@@ -1,12 +1,25 @@
 #!/bin/sh
 sudo apt-get -y install build-essential portaudio19-dev
 
-cd /tmp
-wget https://github.com/Spotifyd/spotifyd/releases/download/untagged-2cb556328b5f57a0fe2b/spotifyd-2018-01-14-armv7.zip
-unzip spotifyd-2018-01-14-armv7.zip
-rm spotifyd-2018-01-14-armv7.zip
-sudo sudo mkdir -p /opt/hifiberry/bin
+sudo mkdir -p /opt/hifiberry/bin
+
+# Install Rust
+curl https://sh.rustup.rs -sSf | sh -s -- -y
+
+git clone https://github.com/Spotifyd/spotifyd
+cd spotifyd
+echo
+echo "Compiling Spotifyd - note that this can take a very long time when running on a Raspberry Pi !"
+echo
+
+cargo build --release
+sudo cp target/release/spotifyd /opt/hifiberry/bin
+cd ..
+rm -rf spotifyd
+
 sudo mv spotifyd /opt/hifiberry/bin
+
+cd /tmp
 
 cat <<EOT >spotify.service
 [Unit]
@@ -34,13 +47,16 @@ cat <<EOT >spotifyd.conf
 #password = PASS
 backend = alsa
 mixer = Master
-volume-control = alsa # or softvol
+volume-control = alsa_linear
 device_name = Beocreate
 bitrate = 320
 onevent = /opt/hifiberry/bin/spotifyd-notification
 EOT
 
-sudo cp spotifyd.conf /etc/spotifyd.conf
+if [ ! -f /etc/spotifyd.conf ]; then
+ sudo cp spotifyd.conf /etc/spotifyd.conf
+fi
+
 sudo cp spotify.service /lib/systemd/system/spotify.service
 sudo systemctl daemon-reload
 sudo systemctl enable spotify.service
