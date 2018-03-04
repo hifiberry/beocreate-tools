@@ -40,8 +40,28 @@ bitrate = 320
 onevent = /opt/hifiberry/bin/spotifyd-notification
 EOT
 
+cat <<EOT >notify
+#!/bin/bash
+/bin/echo $*  > /tmp/spotify.log 
+
+if [ "$PLAYER_EVENT"  == "stop" ]; then
+ /opt/hifiberry/bin/write-status STOP SPOTIFY
+ exit 
+fi
+
+if [ "$PLAYER_EVENT"  == "start" ]; then
+ /opt/hifiberry/bin/write-status START SPOTIFY
+fi
+
+if [ "$TRACK_ID" != "" ]; then
+ /opt/hifiberry/bin/write-status TRACK SPOTIFY $TRACK_ID
+fi
+EOT
+
 sudo cp spotifyd.conf /etc/spotifyd.conf
 sudo cp spotify.service /lib/systemd/system/spotify.service
+sudo cp notify /opt/hifiberry/bin/spotifyd-notification
+sudo chmod ug+rx /opt/hifiberry/bin/spotifyd-notification
 sudo systemctl daemon-reload
 sudo systemctl enable spotify.service
 sudo systemctl restart spotify.service
