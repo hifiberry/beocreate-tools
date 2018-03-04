@@ -18,6 +18,9 @@ sudo cp SigmaClientTool /usr/local/bin/beocreate-client
 sudo chown root /usr/local/bin/beocreate-tcp
 sudo chmod go+rx /usr/local/bin/beocreate-tcp
 
+cd ../..
+rm -rf create
+
 cat <<EOF >beocreate-tcp.service
 [Unit]
 Description=Beocreate DSP TCP deamon

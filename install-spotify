@@ -1,12 +1,24 @@
 #!/bin/sh
 sudo apt-get -y install build-essential portaudio19-dev
 
+sudo mkdir -p /opt/hifiberry/bin
+
+# Install Rust
+curl https://sh.rustup.rs -sSf | sh -s -- -y
+
+git clone https://github.com/Spotifyd/spotifyd
+cd spotifyd
+echo
+echo "Compiling Spotifyd - note that this can take a very long time when running on a Raspberry Pi !"
+echo
+
+cargo build --release
+sudo cp target/release/spotifyd /opt/hifiberry/bin
+cd ..
+rm -rf spotifyd
+
+
 cd /tmp
-wget https://github.com/Spotifyd/spotifyd/releases/download/untagged-49c187b9535b150bb4c7/spotifyd-2018-03-01-armv6.zip
-unzip spotifyd-2018-03-01-armv6.zip
-rm spotifyd-2018-03-01-armv6.zip
-sudo sudo mkdir -p /opt/hifiberry/bin
-sudo mv spotifyd /opt/hifiberry/bin
 
 cat <<EOT >spotify.service
 [Unit]
@@ -34,7 +46,7 @@ cat <<EOT >spotifyd.conf
 #password = PASS
 backend = alsa
 mixer = Master
-volume-control = alsa # or softvol
+volume-control = alsa_linear
 device_name = Beocreate
 bitrate = 320
 onevent = /opt/hifiberry/bin/spotifyd-notification
@@ -58,7 +70,10 @@ if [ "$TRACK_ID" != "" ]; then
 fi
 EOT
 
-sudo cp spotifyd.conf /etc/spotifyd.conf
+if [ ! -f /etc/spotifyd.conf ]; then
+ sudo cp spotifyd.conf /etc/spotifyd.conf
+fi
+
 sudo cp spotify.service /lib/systemd/system/spotify.service
 sudo cp notify /opt/hifiberry/bin/spotifyd-notification
 sudo chmod ug+rx /opt/hifiberry/bin/spotifyd-notification
