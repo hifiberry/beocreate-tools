@@ -1,0 +1,11 @@
+#/bin/bash
+amixer > /tmp/amixer.curr
+if [ ! -f /tmp/amixer.store ]; then
+ cp /tmp/amixer.curr /tmp/amixer.store
+fi
+DIFF=`diff -q /tmp/amixer.curr /tmp/amixer.store`
+if [ "$DIFF" != "" ]; then
+  /usr/sbin/alsactl store
+  cp /tmp/amixer.curr /tmp/amixer.store
+fi
+
