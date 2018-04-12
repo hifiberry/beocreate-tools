@@ -1,0 +1,17 @@
+#!/bin/sh
+# Create new systemd file
+cat <<EOT >/tmp/hifiberry-autodetect.service
+[Unit]
+Description=HiFiBerry sound card automatic detection
+After=sound.target
+
+[Service]
+Type=oneshot
+ExecStart=/opt/hifiberry/bin/detect-hifiberry
+
+[Install]
+WantedBy=multi-user.target
+EOT
+sudo mv /tmp/hifiberry-autodetect.service /lib/systemd/system/hifiberry-autodetect.service
+
+sudo systemctl enable hifiberry-autodetect.service
