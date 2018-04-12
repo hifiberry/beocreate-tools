@@ -3,6 +3,7 @@ cd `dirname $0`
 sudo ./resize-2gb
 ./update-system
 ./enable-hifiberry
+./install-autodetect
 ./enable-spi
 ./install-tcpserver
 ./install-tools

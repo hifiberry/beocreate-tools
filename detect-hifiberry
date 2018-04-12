@@ -1,6 +1,6 @@
 #!/bin/bash
 
-FOUND=`aplay -l|grep hifiberry`
+FOUND=`aplay -l|grep hifiberry | grep -v "pcm5102"`
 VERSION=2
 CONFIG=/boot/config.txt
 I2CBUS=1
