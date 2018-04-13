@@ -38,6 +38,11 @@ function detect_card {
                 echo "amp"
         fi
 
+        # Beocreate
+        res=`i2cget -y $I2CBUS 0x60 2 2>/dev/null`
+        if [ "$res" == "0x03" ]; then
+                echo "dac"
+        fi
 }
 
 if [ "$FOUND" == "" ]; then
@@ -46,6 +51,13 @@ if [ "$FOUND" == "" ]; then
  echo "Detecting using I2C" 
  check_i2c
  card=$(detect_card)
+
+ if [ "card" == "dac" ]; then
+   FOUND2=`aplay -l|grep hifiberry`
+   if [ "$FOUND2" != "" ]; then
+       exit 0
+   fi
+ fi
 
  if [ "$card" != "" ]; then
  	echo "Detected $card"
@@ -62,6 +74,15 @@ if [ "$FOUND" == "" ]; then
 	fi
  else
 	echo "Could not find an I2C enabled sound card"
+        cat /boot/config.txt | grep -v "dtoverlay=hifiberry" > /boot/config.txt2
+        diff /boot/config.txt /boot/config.txt2
+        if [ "$?" != 0 ]; then
+          echo "Found old configuration, removing it"
+          mv /boot/config.txt2 /boot/config.txt
+          sleep 20
+          sync
+          reboot
+        fi
  fi
 else
 	echo "Found HiFiBerry card: $FOUND"

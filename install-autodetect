@@ -1,4 +1,9 @@
 #!/bin/sh
+cd `dirname $0`
+sudo apt-get install -y i2c-tools
+mkdir -p /opt/hifiberry/bin
+cp ./detect-hifiberry /opt/hifiberry/bin
+
 # Create new systemd file
 cat <<EOT >/tmp/hifiberry-autodetect.service
 [Unit]
