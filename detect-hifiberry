@@ -34,7 +34,7 @@ function detect_card {
 
 	# Amp/Amp+
 	res=`i2cget -y $I2CBUS 0x1b 0 2>/dev/null`
-        if [ "$res" != "0x00" ]; then
+        if [ "$res" == "0x6c" ]; then
                 echo "amp"
         fi
 
@@ -46,7 +46,7 @@ function detect_card {
 }
 
 if [ "$FOUND" == "" ]; then
- echo "No HiFiBerry card configured, try to probe using I2C"
+ echo "No HiFiBerry card configured, try to probe using I2C" >> /var/log/hifiberry.log
 
  echo "Detecting using I2C" 
  check_i2c
