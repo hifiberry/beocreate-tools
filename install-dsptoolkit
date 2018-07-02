@@ -1,0 +1,12 @@
+#!/bin/sh
+sudo apt-get install -y python3-pip
+sudo pip3 install hifiberrydsp
+mkdir ~/.dsptoolkit
+cat <<EOF >~/.dsptoolkit/dsptoolkit.conf
+[host]
+ip=127.0.0.1
+
+[dsp]
+program=~/.dsptoolkit/dspprogram.xml
+EOF
+ 

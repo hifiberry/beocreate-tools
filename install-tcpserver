@@ -6,7 +6,7 @@ cd create/SigmaTcpDaemon
 cmake .
 make
 
-sudo systemctl start beocreate-tcp
+sudo systemctl stop beocreate-tcp
 sudo cp sigmaTcpDaemon /usr/local/bin/beocreate-tcp
 sudo chown root /usr/local/bin/beocreate-tcp
 sudo chmod u+s /usr/local/bin/beocreate-tcp

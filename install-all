@@ -6,6 +6,8 @@ sudo ./resize-2gb
 ./install-autodetect
 ./enable-spi
 ./install-tcpserver
+./install-dsptoolkit
 ./install-tools
 ./cleanup-daemons
+./install-players
 sudo reboot
