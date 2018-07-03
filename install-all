@@ -10,4 +10,3 @@ cd `dirname $0`
 ./install-tools
 ./cleanup-daemons
 ./install-players
-sudo reboot
