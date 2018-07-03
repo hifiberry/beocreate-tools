@@ -1,6 +1,6 @@
 #!/bin/sh
 cd `dirname $0`
-sudo ./resize-2gb
+./resize-3gb
 ./update-system
 ./enable-hifiberry
 ./install-autodetect

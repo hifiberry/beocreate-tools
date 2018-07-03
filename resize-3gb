@@ -1,0 +1,21 @@
+#!/bin/bash
+# extend size of the root filesystem to 2GB if it isn't already bigger
+size=`df | grep root | awk '{print $2}'`
+if [ "$size" -gt 3000000 ]; then
+ echo "Root file system already >3GB, exiting"
+ exit
+fi
+
+first_sector=`echo p | sudo fdisk /dev/mmcblk0 | grep Linux| awk '{print $2}'`
+cat <<EOF | sudo fdisk /dev/mmcblk0
+d
+2
+n
+p
+2
+$first_sector
++3G
+w
+EOF
+sudo partprobe
+sudo resize2fs /dev/mmcblk0p2
