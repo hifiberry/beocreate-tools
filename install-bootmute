@@ -1,0 +1,29 @@
+#!/bin/bash
+cat <<EOF >/tmp/beocreate-mute-overlay.dts
+/dts-v1/;
+/plugin/;
+
+/ {
+   videocore {
+      pins_3b2 { // Pi 3 Model B rev 1.2
+         pin_config {
+            pin@default {
+               polarity = "active_high";
+               termination = "pull_down";
+               startup_state = "inactive";
+               function = "input";
+            }; // pin
+            pin@p27 { function = "output";  termination = "pull_up"; drive_strength_mA = < 8 >; startup_state = "active"; };
+         }; // pin_config
+      }; // pins
+   };
+};
+EOF
+
+dtc -q -@ -I dts -O dtb -o /tmp/beocreate-mute-overlay.dtb /tmp/beocreate-mute-overlay.dts
+sudo cp /tmp/beocreate-mute-overlay.dtb /boot/overlays
+
+cat /boot/config.txt | grep -v beocreate-mute > /tmp/config.txt
+echo "dtoverlay=beocreate-mute-overlay" >> /tmp/config.txt
+sudo mv /boot/config.txt /boot/config.bak
+sudo mv /tmp/config.txt /boot/config.txt
