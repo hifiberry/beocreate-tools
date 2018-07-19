@@ -12,6 +12,7 @@ echo
 echo "Compiling Spotifyd - note that this can take a very long time when running on a Raspberry Pi !"
 echo
 
+PATH=$PATH:/$HOME/.cargo/bin
 cargo build --release
 sudo cp target/release/spotifyd /opt/hifiberry/bin
 cd ..
