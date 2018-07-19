@@ -5,7 +5,6 @@ cd `dirname $0`
 ./enable-hifiberry
 ./install-autodetect
 ./enable-spi
-./install-tcpserver
 ./install-dsptoolkit
 ./install-tools
 ./cleanup-daemons
