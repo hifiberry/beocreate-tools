@@ -3,20 +3,30 @@ sudo apt-get -y install build-essential portaudio19-dev
 
 sudo mkdir -p /opt/hifiberry/bin
 
-# Install Rust
-curl https://sh.rustup.rs -sSf | sh -s -- -y
+cd `dirname $0`
 
-git clone https://github.com/Spotifyd/spotifyd
-cd spotifyd
-echo
-echo "Compiling Spotifyd - note that this can take a very long time when running on a Raspberry Pi !"
-echo
+sudo systemctl stop spotify
 
-PATH=$PATH:/$HOME/.cargo/bin
-cargo build --release
-sudo cp target/release/spotifyd /opt/hifiberry/bin
-cd ..
-rm -rf spotifyd
+if [ -f bin-cache/spotifyd ]; then
+ echo "using cached Spotifyd binary"
+ sudo cp bin-cache/spotifyd /opt/hifiberry/bin
+else
+ # Install Rust
+ curl https://sh.rustup.rs -sSf | sh -s -- -y
+
+ git clone https://github.com/Spotifyd/spotifyd
+ cd spotifyd
+ echo
+ echo "Compiling Spotifyd - note that this can take a very long time when running on a Raspberry Pi !"
+ echo
+
+ PATH=$PATH:/$HOME/.cargo/bin
+ cargo build --release
+ sudo cp target/release/spotifyd /opt/hifiberry/bin
+ cp target/release/spotifyd ../bin-cache
+ cd ..
+ rm -rf spotifyd
+fi 
 
 cd /tmp
 
