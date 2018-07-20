@@ -1,23 +1,42 @@
 #!/bin/sh
 sudo apt-get -y install autoconf automake avahi-daemon build-essential git libasound2-dev libavahi-client-dev libconfig-dev libdaemon-dev libpopt-dev libssl-dev libtool xmltoman pkg-config
 
-git clone https://github.com/mikebrady/shairport-sync.git
-cd shairport-sync
-autoreconf -i -f
-./configure --sysconfdir=/etc --with-alsa --with-avahi --with-ssl=openssl --with-systemd --with-metadata
-make
-sudo make install
-cd ..
-rm -rf shairport-sync
+cd `dirname $0`
 
-git clone https://github.com/mikebrady/shairport-sync-metadata-reader
-cd shairport-sync-metadata-reader
-autoreconf -i -f
-./configure
-make
-sudo make install
-cd ..
-rm -rf shairport-sync-metadata-reader
+# Use cached binary if it exists
+if [ -f "bin-cache/shairport-sync" ]; then
+ echo "Using cached ShairportSync"
+ getent group shairport-sync &>/dev/null || sudo groupadd -r shairport-sync >/dev/null
+ getent passwd shairport-sync &> /dev/null || sudo useradd -r -M -g shairport-sync -s /usr/bin/nologin -G audio shairport-sync >/dev/null
+ sudo /usr/bin/install -c bin-cache/shairport-sync /usr/local/bin
+else
+ git clone https://github.com/mikebrady/shairport-sync.git
+ cd shairport-sync
+ autoreconf -i -f
+ ./configure --sysconfdir=/etc --with-alsa --with-avahi --with-ssl=openssl --with-metadata
+ make
+ sudo make install
+ cd ..
+ cp shairport-sync/shairport-sync bin-cache/shairport-sync
+ rm -rf 
+ rm -rf shairport-sync
+fi
+
+# Use cached copy from metadata reader if available
+if [ -f bin-cache/shairport-sync-metadata-reader ]; then
+  echo "Using cached ShairportSync metadata reader"
+  sudo /usr/bin/install -c bin-cache/shairport-sync-metadata-reader '/usr/local/bin'
+else
+ git clone https://github.com/mikebrady/shairport-sync-metadata-reader
+ cd shairport-sync-metadata-reader
+ autoreconf -i -f
+ ./configure
+ make
+ sudo make install
+ cd ..
+ cp shairport-sync-metadata-reader/shairport-sync-metadata-reader bin-cache
+ rm -rf shairport-sync-metadata-reader
+fi
 
 # Create shairport configuration
 cat <<EOT >/tmp/shairport-sync.conf
